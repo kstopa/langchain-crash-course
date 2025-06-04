@@ -5,7 +5,7 @@ from langchain.agents import (
     create_react_agent,
 )
 from langchain_core.tools import Tool
-from langchain_openai import ChatOpenAI
+from langchain_ollama import ChatOllama, OllamaEmbeddings
 
 # Load environment variables from .env file
 load_dotenv()
@@ -36,13 +36,11 @@ tools = [
 prompt = hub.pull("hwchase17/react")
 
 # Initialize a ChatOpenAI model
-llm = ChatOpenAI(
-    model="gpt-4o", temperature=0
-)
+model = ChatOllama(model="gemma3:12b")
 
 # Create the ReAct agent using the create_react_agent function
 agent = create_react_agent(
-    llm=llm,
+    llm=model,
     tools=tools,
     prompt=prompt,
     stop_sequence=True,
@@ -56,7 +54,7 @@ agent_executor = AgentExecutor.from_agent_and_tools(
 )
 
 # Run the agent with a test query
-response = agent_executor.invoke({"input": "What time is it?"})
+response = agent_executor.invoke({"input": "What time is it? Should I go to bed?"})
 
 # Print the response from the agent
 print("response:", response)

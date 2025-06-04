@@ -1,9 +1,16 @@
 import os
 
+from dotenv.main import load_dotenv
 from langchain.text_splitter import CharacterTextSplitter
 from langchain_community.document_loaders import TextLoader
 from langchain_community.vectorstores import Chroma
-from langchain_openai import OpenAIEmbeddings
+from langchain_ollama import ChatOllama, OllamaEmbeddings
+
+# Load environment variables from .env
+load_dotenv()
+
+# Create a ChatOpenAI model
+model = ChatOllama(model="gemma3:12b")
 
 # Define the directory containing the text file and the persistent directory
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -21,7 +28,7 @@ if not os.path.exists(persistent_directory):
         )
 
     # Read the text content from the file
-    loader = TextLoader(file_path)
+    loader = TextLoader(file_path, encoding='utf-8')
     documents = loader.load()
 
     # Split the document into chunks
@@ -35,8 +42,8 @@ if not os.path.exists(persistent_directory):
 
     # Create embeddings
     print("\n--- Creating embeddings ---")
-    embeddings = OpenAIEmbeddings(
-        model="text-embedding-3-small"
+    embeddings = OllamaEmbeddings(
+        model="mxbai-embed-large"
     )  # Update to a valid embedding model if needed
     print("\n--- Finished creating embeddings ---")
 

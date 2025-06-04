@@ -4,7 +4,7 @@ from langchain.embeddings import HuggingFaceEmbeddings
 from langchain.text_splitter import CharacterTextSplitter
 from langchain_community.document_loaders import TextLoader
 from langchain_community.vectorstores import Chroma
-from langchain_openai import OpenAIEmbeddings
+from langchain_ollama import ChatOllama, OllamaEmbeddings
 
 # Define the directory containing the text file and the persistent directory
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -18,7 +18,7 @@ if not os.path.exists(file_path):
     )
 
 # Read the text content from the file
-loader = TextLoader(file_path)
+loader = TextLoader(file_path, encoding='utf-8')
 documents = loader.load()
 
 # Split the document into chunks
@@ -50,8 +50,8 @@ def create_vector_store(docs, embeddings, store_name):
 # Note: The cost of using OpenAI embeddings will depend on your OpenAI API usage and pricing plan.
 # Pricing: https://openai.com/api/pricing/
 print("\n--- Using OpenAI Embeddings ---")
-openai_embeddings = OpenAIEmbeddings(model="text-embedding-ada-002")
-create_vector_store(docs, openai_embeddings, "chroma_db_openai")
+ollama_embeddings = OllamaEmbeddings(model="mxbai-embed-large")
+create_vector_store(docs, ollama_embeddings, "chroma_db_openai")
 
 # 2. Hugging Face Transformers
 # Uses models from the Hugging Face library.
@@ -95,7 +95,7 @@ def query_vector_store(store_name, query, embedding_function):
 query = "Who is Odysseus' wife?"
 
 # Query each vector store
-query_vector_store("chroma_db_openai", query, openai_embeddings)
+query_vector_store("chroma_db_openai", query, ollama_embeddings)
 query_vector_store("chroma_db_huggingface", query, huggingface_embeddings)
 
 print("Querying demonstrations completed.")

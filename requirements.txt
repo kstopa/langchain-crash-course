@@ -1,0 +1,9 @@
+langchain>=0.3.25
+langchain-ollama>=0.3.3
+langchain-community>=0.3.24
+langchain-chroma>=0.2.4
+beautifulsoup4>=4.13.4
+chromadb>=1.0.12 
+dotenv>=0.9.9
+
+wikipedia>=1.4.0

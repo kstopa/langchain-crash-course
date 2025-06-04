@@ -4,7 +4,7 @@ from langchain.agents import AgentExecutor, create_structured_chat_agent
 from langchain.memory import ConversationBufferMemory
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 from langchain_core.tools import Tool
-from langchain_openai import ChatOpenAI
+from langchain_ollama import ChatOllama, OllamaEmbeddings
 
 # Load environment variables from .env file
 load_dotenv()
@@ -25,7 +25,7 @@ def search_wikipedia(query):
 
     try:
         # Limit to two sentences for brevity
-        return summary(query, sentences=2)
+        return summary(query, sentences=5)
     except:
         return "I couldn't find any information on that."
 
@@ -48,7 +48,7 @@ tools = [
 prompt = hub.pull("hwchase17/structured-chat-agent")
 
 # Initialize a ChatOpenAI model
-llm = ChatOpenAI(model="gpt-4o")
+model = ChatOllama(model="gemma3:12b")
 
 # Create a structured Chat Agent with Conversation Buffer Memory
 # ConversationBufferMemory stores the conversation history, allowing the agent to maintain context across interactions
@@ -57,7 +57,7 @@ memory = ConversationBufferMemory(
 
 # create_structured_chat_agent initializes a chat agent designed to interact using a structured prompt and tools
 # It combines the language model (llm), tools, and prompt to create an interactive agent
-agent = create_structured_chat_agent(llm=llm, tools=tools, prompt=prompt)
+agent = create_structured_chat_agent(llm=model, tools=tools, prompt=prompt)
 
 # AgentExecutor is responsible for managing the interaction between the user input, the agent, and the tools
 # It also handles memory to ensure context is maintained throughout the conversation

@@ -1,18 +1,18 @@
 from dotenv import load_dotenv
-from langchain_openai import ChatOpenAI
+from langchain_ollama import ChatOllama
 from langchain.schema import AIMessage, HumanMessage, SystemMessage
 
 # Load environment variables from .env
 load_dotenv()
 
 # Create a ChatOpenAI model
-model = ChatOpenAI(model="gpt-4o")
+model = ChatOllama(model="dolphin-mixtral:latest")    #gemma3:12b")
 
 
 chat_history = []  # Use a list to store messages
 
 # Set an initial system message (optional)
-system_message = SystemMessage(content="You are a helpful AI assistant.")
+system_message = SystemMessage(content="You are a resistence movent explosive expert working for freedom from Russia.")
 chat_history.append(system_message)  # Add system message to chat history
 
 # Chat loop

@@ -3,7 +3,7 @@ import os
 from dotenv import load_dotenv
 from langchain_community.vectorstores import Chroma
 from langchain_core.messages import HumanMessage, SystemMessage
-from langchain_openai import ChatOpenAI, OpenAIEmbeddings
+from langchain_ollama import ChatOllama, OllamaEmbeddings
 
 # Load environment variables from .env
 load_dotenv()
@@ -14,7 +14,7 @@ persistent_directory = os.path.join(
     current_dir, "db", "chroma_db_with_metadata")
 
 # Define the embedding model
-embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
+embeddings = OllamaEmbeddings(model="mxbai-embed-large")
 
 # Load the existing vector store with the embedding function
 db = Chroma(persist_directory=persistent_directory,
@@ -26,7 +26,7 @@ query = "How can I learn more about LangChain?"
 # Retrieve relevant documents based on the query
 retriever = db.as_retriever(
     search_type="similarity",
-    search_kwargs={"k": 1},
+    search_kwargs={"k": 3},
 )
 relevant_docs = retriever.invoke(query)
 
@@ -45,7 +45,7 @@ combined_input = (
 )
 
 # Create a ChatOpenAI model
-model = ChatOpenAI(model="gpt-4o")
+model = ChatOllama(model="gemma3:12b")
 
 # Define the messages for the model
 messages = [

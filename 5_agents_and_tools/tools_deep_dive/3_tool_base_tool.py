@@ -9,7 +9,9 @@ from langchain import hub
 from langchain.agents import AgentExecutor, create_tool_calling_agent
 from langchain.pydantic_v1 import BaseModel, Field
 from langchain_core.tools import BaseTool
-from langchain_openai import ChatOpenAI
+from langchain_ollama import ChatOllama, OllamaEmbeddings
+
+from duckduckgo_search import DDGS
 
 
 load_dotenv()
@@ -32,18 +34,19 @@ class MultiplyNumbersArgs(BaseModel):
 class SimpleSearchTool(BaseTool):
     name = "simple_search"
     description = "useful for when you need to answer questions about current events"
-    args_schema: Type[BaseModel] = SimpleSearchInput
+    args_schema: SimpleSearchInput
 
     def _run(
         self,
         query: str,
     ) -> str:
         """Use the tool."""
-        from tavily import TavilyClient
+        # from tavily import TavilyClient
 
-        api_key = os.getenv("TAVILY_API_KEY")
-        client = TavilyClient(api_key=api_key)
-        results = client.search(query=query)
+        # api_key = os.getenv("TAVILY_API_KEY")
+        # client = TavilyClient(api_key=api_key)
+        # results = client.search(query=query)
+        results = DDGS().text(query, max_results=5)
         return f"Search results for: {query}\n\n\n{results}\n"
 
 
@@ -51,7 +54,7 @@ class SimpleSearchTool(BaseTool):
 class MultiplyNumbersTool(BaseTool):
     name = "multiply_numbers"
     description = "useful for multiplying two numbers"
-    args_schema: Type[BaseModel] = MultiplyNumbersArgs
+    args_schema: MultiplyNumbersArgs
 
     def _run(
         self,
@@ -70,7 +73,7 @@ tools = [
 ]
 
 # Initialize a ChatOpenAI model
-llm = ChatOpenAI(model="gpt-4o")
+llm = ChatOllama(model="llama3.1")
 
 # Pull the prompt template from the hub
 prompt = hub.pull("hwchase17/openai-tools-agent")
